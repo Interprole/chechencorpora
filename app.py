@@ -9,7 +9,7 @@ DATABASE_USER = os.getenv("DATABASE_USER")
 DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
 
 DATABASE_URL = f"postgresql://{DATABASE_USER}:{DATABASE_PASSWORD}"\
-                    f"@{DATABASE_HOST}{DATABASE_NAME}"
+                    f"@{DATABASE_HOST}/{DATABASE_NAME}"
 
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 db.init_app(app)
