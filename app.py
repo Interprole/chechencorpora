@@ -2,7 +2,9 @@ from flask import Flask, render_template, request, redirect, Response, session
 from database import *
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgres://default:yO4ZHMgkp6xS"\
+    "@ep-damp-frog-a418fi3e.us-east-1.aws.neon.tech:5432/"\
+    "verceldb?sslmode=require"
 db.init_app(app)
 
 
