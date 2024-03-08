@@ -1,10 +1,10 @@
 from flask import Flask, render_template, request, redirect, Response, session
 from database import *
+import os
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://default:yO4ZHMgkp6xS"\
-    "@ep-damp-frog-a418fi3e.us-east-1.aws.neon.tech:5432/"\
-    "verceldb?sslmode=require"
+psql_url = os.getenv("POSTGRES_URL_NON_POOLING")
+app.config['SQLALCHEMY_DATABASE_URI'] = psql_url
 db.init_app(app)
 
 

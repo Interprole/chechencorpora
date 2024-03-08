@@ -27,3 +27,7 @@ def get_corps():
     return db.session.query(Corpora).all()
 
 
+if __name__ == 'main':
+    db.session.create_all()
+
+
