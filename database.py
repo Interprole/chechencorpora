@@ -1,4 +1,3 @@
-from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
@@ -23,11 +22,5 @@ class Diolects(db.Model):
     name = db.Column(db.String(150), unique=True, nullable=False)
 
 
-def get_corps():
+def retrieve_corpora():
     return db.session.query(Corpora).all()
-
-
-if __name__ == 'main':
-    db.session.create_all()
-
-
