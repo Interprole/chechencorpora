@@ -31,8 +31,8 @@ def base():
 
 @app.route('/corpora')
 def corpora():
-    corps = retrieve_corpora()
-    return render_template('corpora.html', corps=corps)
+    corpora = retrieve_corpora()
+    return render_template('corpora.html', corpora=corpora)
 
 
 if __name__ == '__main__':
