@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Вход</h2>
+
+<form class="container" action="/signin" method="POST">
+
+<div class="form-group">
+    <label for="login">Логин</label>
+    <input type="login" class="form-control" name="login" id="login" aria-describedby="loginHelp" placeholder="Введите логин или электронную почту">
+    {% if err == 'invalid login' %}
+    <div class="alert alert-danger" role="alert">
+        Пользователя с таким логином не существует
+    </div>
+    {% endif %}
+</div>
+
+<div class="form-group">
+    <label for="password">Пароль</label>
+    <input type="password" class="form-control" name="password" id="password" placeholder="Введите пароль">
+    {% if err == 'wrong password' %}
+    <div class="alert alert-danger" role="alert">
+        Неверный пароль
+    </div>
+    {% endif %}
+</div>
+
+
+<!--
+<div class="form-check">
+    <input type="checkbox" class="form-check-input" name="remember" id="exampleCheck1">
+    <label class="form-check-label" for="exampleCheck1">Запомнить компьютер</label>
+</div>
+-->
+
+
+<button type="submit" class="btn btn-primary">Войти</button>
+</form>
+
+{% endblock %}

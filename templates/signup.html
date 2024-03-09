@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Регистрация</h2>
+
+<form class="container" action="/signup" method="POST">
+
+<div class="form-group">
+    <label for="login">Логин</label>
+    <input type="login" class="form-control" name="login" id="login" aria-describedby="loginHelp" placeholder="Введите логин">
+	{% if err == 'existing login' %}
+    <div class="alert alert-danger" role="alert">
+        Пользователь с таким логином уже существует
+    </div>
+    {% endif %}
+</div>
+
+<div class="form-group">
+    <label for="email">Почта</label>
+    <input type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp" placeholder="Введите почту" required="true">
+    {% if err == 'existing email' %}
+    <div class="alert alert-danger" role="alert">
+        Пользователь с такой почтой уже существует
+    </div>
+    {% endif %}
+</div>
+
+<div class="form-group">
+    <label for="name">Имя</label>
+    <input type="text" class="form-control" name="name" id="name" aria-describedby="nameHelp" placeholder="Введите имя" required="true">
+</div>
+
+<div class="form-group">
+    <label for="password">Пароль</label>
+    <input type="password" class="form-control" name="password" id="password" placeholder="Введите пароль" required="true">
+</div>
+
+
+<button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+</form>
+
+{% endblock %}
