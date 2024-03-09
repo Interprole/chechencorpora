@@ -78,8 +78,9 @@ def signup():
             return render_template('signup.html', error='existing email')
 
         # Hash password
-        hashed_password = bcrypt.hashpw(password.encode('utf-8'),
-                                        bcrypt.gensalt())
+        hashed_password = bcrypt.generate_password_hash(
+            password._unicode_to_bytes()
+            )
 
         # Create and save new user
         add_user(login=login,
@@ -112,7 +113,7 @@ def login():
     # Validate credentials
     if user:
         if bcrypt.check_password_hash(user.password,
-                                      password.encode('utf-8')):
+                                      password._unicode_to_bytes()):
             # Successful login
             login_user(user)
             return redirect(url_for('home'))

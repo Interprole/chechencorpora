@@ -10,7 +10,7 @@ class User(db.Model, UserMixin):
     login = db.Column(db.String(80), primary_key=True, nullable=False)
     name = db.Column(db.String(150), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(120), nullable=False)
+    password = db.Column(db.String(500), nullable=False)
 
 
 class Corpus(db.Model):
@@ -49,13 +49,16 @@ def create_database():
 def add_corpus(name, source, diolect, description):
     corpus = Corpus(name, source, diolect, description)
     db.session.add(corpus)
-    db.commit()
+    db.session.commit()
 
 
 def add_user(login, name, email, password):
-    user = User(login, name, email, password)
+    user = User(login=login,
+                name=name,
+                email=email,
+                password=password)
     db.session.add(user)
-    db.commt()
+    db.session.commit()
 
 
 def retrieve_corpora():
