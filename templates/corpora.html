@@ -6,11 +6,11 @@
 </div>
 {% endif %} -->
 <div class="list-group">
-<!--{% for corpus in corpora %}
+{% for corpus in corpora %}
 
 {% if corpus[6] == 1 %}
   <div class="list-group-item">
-  <a href="/corpus/{{corpus[0]}}" class="list-group-item list-group-item-action">
+  <a href="/corpus/{{corpus.id}}" class="list-group-item list-group-item-action">
     <div class="d-flex w-100 justify-content-between">
       <h2 class="mb-1">{{corpus[1]}}</h2>
       <h5 class="mb-1">{{corpus[3]}}</h5>
@@ -29,6 +29,6 @@
   {% endif %}
   </div>
 {% endif %}
-{% endfor %} -->
+{% endfor %}
 </div>
 {% endblock %}
