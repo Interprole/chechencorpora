@@ -1,9 +1,14 @@
 from flask import Flask, render_template, request, redirect, Response, session
-from database import *
 import os
+from database import retrieve_corpora, init_database, create_database
 from dotenv import load_dotenv
+
+app = Flask(__name__)
+
+# env from .env file
 load_dotenv()
 
+# env variables
 DATABASE_HOST = os.getenv("POSTGRES_HOST")
 DATABASE_NAME = os.getenv("POSTGRES_DATABASE")
 DATABASE_USER = os.getenv("POSTGRES_USER")
@@ -12,8 +17,11 @@ DATABASE_URL = f"postgresql+psycopg2://{DATABASE_USER}:{DATABASE_PASSWORD}"\
                 f"@{DATABASE_HOST}/{DATABASE_NAME}"\
                 f"?sslmode=require"
 
-app = Flask(__name__)
+# initializing app
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
+init_database(app)
+with app.app_context():
+    create_database()
 
 
 @app.route('/')
@@ -28,5 +36,4 @@ def corpora():
 
 
 if __name__ == '__main__':
-    db.init_app(app)
     app.run(port=80, debug=True)

@@ -24,3 +24,11 @@ class Diolects(db.Model):
 
 def retrieve_corpora():
     return db.session.query(Corpora).all()
+
+
+def create_database():
+    db.create_all()
+
+
+def init_database(app):
+    db.init_app(app)
