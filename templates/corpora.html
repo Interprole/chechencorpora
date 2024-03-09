@@ -7,6 +7,7 @@
 {% endif %} -->
 <div class="list-group">
 {% for corpus in corpora %}
+<!--
 {% if corpus[6] == 1 %}
   <div class="list-group-item">
   <a href="/corpus/{{corpus[0]}}" class="list-group-item list-group-item-action">
@@ -18,16 +19,16 @@
     <p class="mb-1">{{corpus[2]}}</p>
     <small class="text-body-secondary"><b>{{corpus[5]}}+</b></small>
   </a>
-  <!-- {% if session.login == corpus[3] %}
+  {% if session.login == corpus[3] %}
   <div class="d-grid gap-2 d-md-flex justify-content-md-end">
   <a class="btn btn-warning" role="button" href="/edit/{{corpus[0]}}">Редактивароть</a>
   <form href="/corpora" method="post">
     <button type="submit" class="btn btn-danger" name="del" value='{"corpus_id":"{{corpus[0]}}","author":"{{corpus[3]}}"}'>Удалить</button>
   </form>
   </div>
-  {% endif %} -->
+  {% endif %}
   </div>
-{% endif %}
+{% endif %} -->
 {% endfor %}
 </div>
 {% endblock %}
