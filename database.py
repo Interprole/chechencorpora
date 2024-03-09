@@ -12,8 +12,8 @@ class Users(db.Model):
 class Corpora(db.Model):
     __tablename__ = 'corpora'
     id = db.Column(db.Integer, primary_key=True)
-    diolect = db.Column(db.String(150), db.ForeignKey('diolects.name'),
-                        unique=True)
+    source = db.Column(db.String(200))
+    diolect = db.Column(db.String(150), db.ForeignKey('diolects.name'))
 
 
 class Diolects(db.Model):

@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
-{% if session.login %}
+<!-- {% if session.login %}
 <div class="form-control">
   <a class="btn btn-primary" role="button" href="/my_corpora">Мои опросы</a>
 </div>
-{% endif %}
+{% endif %} -->
 <div class="list-group">
 {% for corpus in corpora %}
 {% if corpus[6] == 1 %}
@@ -18,14 +18,14 @@
     <p class="mb-1">{{corpus[2]}}</p>
     <small class="text-body-secondary"><b>{{corpus[5]}}+</b></small>
   </a>
-  {% if session.login == corpus[3] %}
+  <!-- {% if session.login == corpus[3] %}
   <div class="d-grid gap-2 d-md-flex justify-content-md-end">
   <a class="btn btn-warning" role="button" href="/edit/{{corpus[0]}}">Редактивароть</a>
   <form href="/corpora" method="post">
     <button type="submit" class="btn btn-danger" name="del" value='{"corpus_id":"{{corpus[0]}}","author":"{{corpus[3]}}"}'>Удалить</button>
   </form>
   </div>
-  {% endif %}
+  {% endif %} -->
   </div>
 {% endif %}
 {% endfor %}
