@@ -1,10 +1,6 @@
 # Load model directly
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 
-tokenizer = AutoTokenizer.from_pretrained(
-    "MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7")
-model = AutoModelForSequenceClassification.from_pretrained(
-    "MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7")
 
 
 from flask import (
