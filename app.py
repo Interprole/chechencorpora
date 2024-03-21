@@ -1,9 +1,5 @@
 from transformers import pipeline
 
-pipe = pipeline(
-    "zero-shot-classification",
-    model="MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7")
-
 from flask import (
     Flask,
     render_template,
