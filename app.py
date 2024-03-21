@@ -40,6 +40,9 @@ DATABASE_URL = f"postgresql+psycopg2://{DATABASE_USER}:{DATABASE_PASSWORD}"\
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
+HOST = os.getenv("HOST")
+PORT = os.getenv("PORT")
+
 # Initializing app
 app = Flask(__name__)
 app.config['SECRET_KEY'] = SECRET_KEY
@@ -124,4 +127,4 @@ def login():
 
 
 if __name__ == '__main__':
-    app.run(port=10000, debug=True)
+    app.run(host=HOST, port=PORT, debug=True)
