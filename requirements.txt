@@ -6,4 +6,4 @@ python-dotenv==1.0.1
 transformers==4.32.1
 torch==2.2.0
 tensorflow==2.15.0
-flax==1.2.0
+flax==0.8.2
