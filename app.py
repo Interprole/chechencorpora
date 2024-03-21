@@ -1,3 +1,12 @@
+# Load model directly
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
+
+tokenizer = AutoTokenizer.from_pretrained(
+    "MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7")
+model = AutoModelForSequenceClassification.from_pretrained(
+    "MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7")
+
+
 from flask import (
     Flask,
     render_template,
@@ -78,9 +87,7 @@ def signup():
             return render_template('signup.html', error='existing email')
 
         # Hash password
-        hashed_password = bcrypt.generate_password_hash(
-            password._unicode_to_bytes()
-            )
+        hashed_password = bcrypt.generate_password_hash(password)
 
         # Create and save new user
         add_user(login=login,
@@ -112,8 +119,7 @@ def login():
 
     # Validate credentials
     if user:
-        if bcrypt.check_password_hash(user.password,
-                                      password._unicode_to_bytes()):
+        if bcrypt.check_password_hash(user.password, password):
             # Successful login
             login_user(user)
             return redirect(url_for('home'))
