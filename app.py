@@ -1,5 +1,4 @@
-from transformers import pipeline
-
+from sklearn.neighbors import KNeighborsClassifier
 from flask import (
     Flask,
     render_template,
