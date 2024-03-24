@@ -1,4 +1,5 @@
 from sklearn.neighbors import KNeighborsClassifier
+import random
 from flask import (
     Flask,
     render_template,
@@ -22,7 +23,8 @@ from database import (
     add_user,
     add_corpus,
     load_user,
-    init_login_manager
+    init_login_manager,
+    find_user
     )
 from dotenv import load_dotenv
 
@@ -74,18 +76,22 @@ def signup():
         name = request.form['name']
         email = request.form['email']
         password = request.form['password']
+        rand_id = random.randint(0, 99999999)
 
         # Validating login and password
-        if load_user(login):
+        if find_user(login):
             return render_template('signup.html', error='existing login')
-        if load_user(email):
+        if find_user(email):
             return render_template('signup.html', error='existing email')
 
         # Hash password
-        hashed_password = bcrypt.generate_password_hash(password)
+        hashed_password = bcrypt.generate_password_hash(
+            password
+                ).decode("utf-8")
 
         # Create and save new user
-        add_user(login=login,
+        add_user(id=rand_id,
+                 login=login,
                  name=name,
                  email=email,
                  password=hashed_password)
@@ -96,10 +102,21 @@ def signup():
     return render_template('signup.html')
 
 
+@app.route('/my_corpora')
+def my_corpora():
+    return render_template('corpora.html')
+
+
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
+    return redirect(url_for('home'))
+
+
+@app.route('/account')
+def account():
+    return render_template('account.html')
 
 
 @app.route('/signin', methods=['GET', 'POST'])
@@ -107,20 +124,23 @@ def login():
     if request.method == 'GET':
         return render_template('signin.html')
 
-    login = request.form['login']
-    password = request.form['password']
+    login = request.form.get('login')
+    password = request.form.get('password')
+    remember = request.form.get('remember') == 'on'
 
-    user = load_user(login)
+    user = find_user(login)
 
     # Validate credentials
     if user:
         if bcrypt.check_password_hash(user.password, password):
             # Successful login
-            login_user(user)
+            login_user(user, remember=remember)
+
             return redirect(url_for('home'))
 
-        error = 'imvalid login'
-    error = 'wrong password'
+        error = 'wrong password'
+    else:
+        error = 'invalid login'
 
     # Failed login
     return render_template('signin.html', error=error)

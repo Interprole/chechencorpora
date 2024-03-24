@@ -5,49 +5,14 @@
 
 <div class="form-group">
 <label><h4>Логин</h4></label><br>
-<h5>{{user[0]}}</h5>
+<h5>{{current_user.login}}</h5>
 </div>
 
 <div class="form-group">
 <label><h4>Почта</h4></label><br>
-<h5>{{user[1]}}</h5>
+<h5>{{current_user.email}}</h5>
 </div>
 
-<div class="form-group">
-<label><h4>Возраст</h4></label><br>
-<h5>{{user[2]}}</h5>
-</div>
-
-<div class="form-group">
-<label><h4>Гендер</h4></label><br>
-<h5>{% if user[3] == 'male' %} мужской {% elif user[3] == 'female' %} женский {% else %} другой {% endif %}</h5>
-</div>
-
-<div class="form-group">
-<label><h4>Город</h4></label><br>
-<h5>{{user[4]}}</h5>
-</div>
-
-<div class="form-group">
-<label><h4>Родной язык</h4></label><br>
-<h5>{{user[5]}}</h5>
-</div>
-
-<div class="form-group">
-<label><h4>Образование</h4></label><br>
-<h5>{% if user[6] == "kindergarten" %}детский сад
-		{% elif user[6] == "school_9" %}9 классов школы
-		{% elif user[6] =="school_11" %}11 классов школы
-		{% elif user[6] =="college" %}среднее специальное
-		{% elif user[6] =="student" %}неоконченное высшее
-		{% elif user[6] =="bachelor" %}бакалавриат/специалитет
-		{% elif user[6] =="master" %}магистратура
-		{% elif user[6] =="phd" %}аспирантура
-		{% elif user[6] =="candidate" %}кандидат наук
-		{% elif user[6] =="doctor" %}доктор наук
-		{% endif %}
-</h5>
-</div>
 
 </div>
 {% endblock %}

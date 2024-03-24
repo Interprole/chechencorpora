@@ -1,10 +1,35 @@
 {% extends 'base.html' %}
 {% block content %}
-<!-- {% if session.login %}
-<div class="form-control">
-  <a class="btn btn-primary" role="button" href="/my_corpora">Мои опросы</a>
+{% if current_user.admin %}
+<p>
+  <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+    Создать корпус
+  </button>
+</p>
+<div class="collapse" id="collapseExample">
+  <div class="card card-body">
+    <form class="container" action="#" method="POST">
+        <div class="form-group">
+            <label for="name">Название</label>
+            <input type="text" class="form-control" name="name" id="name" aria-describedby="nameHelp" placeholder="Введите название" required="true"></input>
+        </div>
+        <div class="form-group">
+            <label for="idiom">Корпус какого идиома</label>
+            <input type="text" class="form-control" name="idiom" id="idiom" aria-describedby="idiomHelp" placeholder="Введите название идиома" required="true"></input>
+        </div>
+        <div class="form-group">
+            <label for="source">Источник</label>
+            <input type="text" class="form-control" name="source" id="source" aria-describedby="sourceHelp" placeholder="Откуда данные" required="true"></input>
+        </div>
+        <div class="form-group">
+            <label for="description">Описание корпуса</label>
+            <textarea class="form-control" name="description" id="description" aria-describedby="descriptionHelp" placeholder="Введите описание" required="true"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Создать</button>
+    </form>
+    </div>
 </div>
-{% endif %} -->
+{% endif %}
 <div class="list-group">
 {% for corpus in corpora %}
 
