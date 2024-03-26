@@ -159,6 +159,7 @@ def corpora():
 def search():
     search = 'n'
     result = None
+    query = ''
     if request.method == 'POST':
         text = request.form.get('query')
         result = search_morph(text)
