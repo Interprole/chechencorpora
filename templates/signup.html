@@ -7,7 +7,7 @@
 <div class="form-group">
     <label for="login">Логин</label>
     <input type="login" class="form-control" name="login" id="login" aria-describedby="loginHelp" placeholder="Введите логин">
-	{% if err == 'existing login' %}
+	{% if message == 'existing login' %}
     <div class="alert alert-danger" role="alert">
         Пользователь с таким логином уже существует
     </div>
@@ -17,7 +17,7 @@
 <div class="form-group">
     <label for="email">Почта</label>
     <input type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp" placeholder="Введите почту" required="true">
-    {% if err == 'existing email' %}
+    {% if message == 'existing email' %}
     <div class="alert alert-danger" role="alert">
         Пользователь с такой почтой уже существует
     </div>

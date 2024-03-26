@@ -1,21 +1,32 @@
 {% extends 'base.html' %}
 {% block content %}
+
 {% if current_user.admin %}
 <p>
-  <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+  <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#corpuscreate" aria-expanded="false" aria-controls="corpuscreate">
     Создать корпус
   </button>
 </p>
-<div class="collapse" id="collapseExample">
+<div class="collapse" id="corpuscreate">
   <div class="card card-body">
     <form class="container" action="#" method="POST">
         <div class="form-group">
             <label for="name">Название</label>
             <input type="text" class="form-control" name="name" id="name" aria-describedby="nameHelp" placeholder="Введите название" required="true"></input>
+            {% if message == 'existing corpus' %}
+            <div class="alert alert-danger" role="alert">
+                Корпус с таким названием уже существует
+            </div>
+            {% endif %}
         </div>
         <div class="form-group">
-            <label for="idiom">Корпус какого идиома</label>
-            <input type="text" class="form-control" name="idiom" id="idiom" aria-describedby="idiomHelp" placeholder="Введите название идиома" required="true"></input>
+            <label for="idiom">Корпус какого идиома?</label>
+            <select class="form-control" name="idiom" id="idiom" aria-describedby="idiomHelp" required>
+                <option value="" selected disabled>Выберите идиому</option>
+                {% for idiom in idioms %}
+                <option value="{{ idiom.id }}">{{ idiom.name }}</option>
+                {% endfor %}
+            </select>
         </div>
         <div class="form-group">
             <label for="source">Источник</label>
@@ -30,30 +41,18 @@
     </div>
 </div>
 {% endif %}
-<div class="list-group">
-{% for corpus in corpora %}
 
-{% if corpus[6] == 1 %}
-  <div class="list-group-item">
-  <a href="/corpus/{{corpus.id}}" class="list-group-item list-group-item-action">
-    <div class="d-flex w-100 justify-content-between">
-      <h2 class="mb-1">{{corpus[1]}}</h2>
-      <h5 class="mb-1">{{corpus[3]}}</h5>
-      <small class="text-body-secondary">{{corpus[4]}}</small>
-    </div>
-    <p class="mb-1">{{corpus[2]}}</p>
-    <small class="text-body-secondary"><b>{{corpus[5]}}+</b></small>
-  </a>
-  {% if session.login == corpus[3] %}
-  <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-  <a class="btn btn-warning" role="button" href="/edit/{{corpus[0]}}">Редактивароть</a>
-  <form href="/corpora" method="post">
-    <button type="submit" class="btn btn-danger" name="del" value='{"corpus_id":"{{corpus[0]}}","author":"{{corpus[3]}}"}'>Удалить</button>
-  </form>
-  </div>
-  {% endif %}
-  </div>
-{% endif %}
+{% for corpus in corpora %}
+    <a href="/corpora/{{ corpus.id }}" class="corpus-link">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">{{ corpus.name }}</h5>
+                <p class="card-text"><strong>Источник:</strong> {{ corpus.source }}</p>
+                <p class="card-text"><strong>Описание:</strong> {{ corpus.description }}</p>
+                <p class="card-text"><strong>Идиома:</strong> {{ corpus.idiom.name }}</p>
+            </div>
+        </div>
+    </a>
 {% endfor %}
-</div>
+
 {% endblock %}

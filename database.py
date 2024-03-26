@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, LoginManager
+import random
 
 db = SQLAlchemy()
 login_manager = LoginManager()
@@ -17,16 +18,21 @@ class User(db.Model, UserMixin):
 
 class Corpus(db.Model):
     __tablename__ = 'corpora'
-    name = db.Column(db.String(80), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), unique=True, nullable=False)
     source = db.Column(db.String(150))
-    dialect = db.Column(db.String(150), db.ForeignKey('dialects.name'))
+    idiom_id = db.Column(db.Integer, db.ForeignKey('idioms.id'),
+                         nullable=False)
     description = db.Column(db.Text())
 
 
-class Dialect(db.Model):
-    __tablename__ = 'dialects'
+class Idiom(db.Model):
+    __tablename__ = 'idioms'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150), unique=True, nullable=False)
+    group_id = db.Column(db.Integer, db.ForeignKey('idioms.id'), nullable=True)
+    group = db.relationship("Idiom", remote_side=[id])
+    corpora = db.relationship('Corpus', backref='idiom', lazy=True)
 
 
 def init_database(app):
@@ -52,18 +58,19 @@ def create_database():
     db.create_all()
 
 
-def add_corpus(name, source, dialect, description):
-    corpus = Corpus(name=name,
+def add_corpus(name, source, idiom_id, description):
+    corpus = Corpus(id=random.randint(0, 99999999),
+                    name=name,
                     source=source,
-                    dialect=dialect,
+                    idiom_id=idiom_id,
                     description=description
                     )
     db.session.add(corpus)
     db.session.commit()
 
 
-def add_user(id, login, name, email, password):
-    user = User(id=id,
+def add_user(login, name, email, password):
+    user = User(id=random.randint(0, 99999999),
                 login=login,
                 name=name,
                 email=email,
@@ -72,5 +79,26 @@ def add_user(id, login, name, email, password):
     db.session.commit()
 
 
-def retrieve_corpora():
+def add_idiom(name, group_id=None):
+    id = random.randint(0, 99999999)
+    idiom = Idiom(id=id,
+                  name=name,
+                  group_id=group_id)
+    db.session.add(idiom)
+    db.session.commit()
+
+
+def get_corpora(name=None, id=None):
+    if name:
+        return Corpus.query.filter(Corpus.name == name).first()
+    if id:
+        return Corpus.query.get(id)
     return Corpus.query.all()
+
+
+def get_idioms(name=None, id=None):
+    if name:
+        return Idiom.query.filter(Idiom.name == name).first()
+    if id:
+        return Idiom.query.get(id)
+    return Idiom.query.all()

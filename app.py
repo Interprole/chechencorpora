@@ -1,5 +1,5 @@
 from sklearn.neighbors import KNeighborsClassifier
-import random
+import plotly.graph_objects as go
 from flask import (
     Flask,
     render_template,
@@ -17,14 +17,16 @@ from flask_login import (
 from flask_bcrypt import Bcrypt
 import os
 from database import (
-    retrieve_corpora,
+    get_corpora,
     init_database,
     create_database,
     add_user,
     add_corpus,
     load_user,
     init_login_manager,
-    find_user
+    find_user,
+    get_idioms,
+    add_idiom
     )
 from dotenv import load_dotenv
 
@@ -63,26 +65,119 @@ def home():
     return render_template('index.html')
 
 
-@app.route('/corpora')
+@app.route('/corpora', methods=['POST', 'GET'])
 def corpora():
-    corpora = retrieve_corpora()
-    return render_template('corpora.html', corpora=corpora)
+    if request.method == 'POST':
+        name = request.form.get('name')
+        description = request.form.get('description')
+        source = request.form.get('source')
+        idiom_id = get_idioms(
+            request.form.get('idiom')).id
+
+        if get_corpora(name=name):
+            message = 'existing corpus'
+        else:
+            add_corpus(name=name,
+                       source=source,
+                       description=description,
+                       idiom_id=idiom_id)
+            message = 'success'
+
+    corpora = get_corpora()
+    idioms = get_idioms()
+    message = ''
+
+    return render_template('corpora.html', corpora=corpora,
+                           message=message, idioms=idioms)
+
+
+@app.route('/idioms', methods=['POST', 'GET'])
+def idioms():
+    if request.method == 'POST':
+        name = request.form.get('name')
+
+        # group_id здесь может быть ''
+        group_id = request.form.get('group')
+        if group_id == '':
+            group_id = None
+
+        if get_idioms(name=name):
+            message = 'existing idiom'
+        else:
+            add_idiom(name=name, group_id=group_id)
+            message = 'success'
+
+    idioms = get_idioms()
+    tree_data = {}
+
+    # Создаем данные для дерева
+    for idiom in idioms:
+        idiom_data = {'name': idiom.name,
+                      'group': idiom.group.name if idiom.group else 'Языки',
+                      'corpora': []}
+        for corpus in idiom.corpora:
+            corpus_link = f'<a href="/corpora/{corpus.id}">{corpus.name}</a>'
+            idiom_data['corpora'].append(corpus_link)
+        if idiom.group_id not in tree_data:
+            tree_data[idiom.group_id] = {'name': idiom.group.name
+                                         if idiom.group else 'Языки',
+                                         'children': []}
+        tree_data[idiom.group_id]['children'].append(idiom_data)
+
+    # Функция для создания дерева
+    def create_tree(tree_nodes, node):
+        if 'children' in node:
+            for child in node['children']:
+                create_tree(tree_nodes, child)
+        if 'group' in node or node.get('name') == 'Языки':
+            print(tree_nodes)
+            tree_nodes['labels'].append(node['name'])
+            tree_nodes['parents'].append(node.get('group'))
+            tree_nodes['customdata'].append(node.get('corpora'))
+
+    tree_nodes = {'labels': [], 'parents': [],
+                  'customdata': []}
+    create_tree(tree_nodes, {'children': list(tree_data.values())})
+    treemap = go.Treemap(
+        labels=tree_nodes['labels'],
+        parents=tree_nodes['parents'],
+        # Добавляем информацию о корпусах в пользовательские данные
+        customdata=tree_nodes['customdata'],
+        hovertemplate="<b>%{label}</b><br><br>" +
+        "Corpora: %{customdata}<br>" +
+        "<extra></extra>",
+    )
+
+    # Создание дерева
+    fig = go.Figure(
+        data=treemap)
+    fig.update_traces(root_color="lightgrey")
+    fig.update_layout(
+        title='Дерево языков',
+        margin=dict(t=50, l=25, r=25, b=25),
+    )
+
+    # Возвращаем интерактивное дерево в виде HTML
+    tree_html = fig.to_html(full_html=False, include_plotlyjs='cdn')
+
+    message = ''
+    return render_template('idioms.html', idioms=idioms,
+                           message=message, tree_html=tree_html)
 
 
 @app.route('/signup', methods=['POST', 'GET'])
 def signup():
     if request.method == 'POST':
-        login = request.form['login']
-        name = request.form['name']
-        email = request.form['email']
-        password = request.form['password']
-        rand_id = random.randint(0, 99999999)
+        login = request.form.get('login')
+        name = request.form.get('name')
+        email = request.form.get('email')
+        password = request.form.get('password')
 
         # Validating login and password
         if find_user(login):
-            return render_template('signup.html', error='existing login')
+            return render_template('signup.html', message='existing login')
         if find_user(email):
-            return render_template('signup.html', error='existing email')
+            return render_template('signup.html', message='existing email')
 
         # Hash password
         hashed_password = bcrypt.generate_password_hash(
@@ -90,8 +185,7 @@ def signup():
                 ).decode("utf-8")
 
         # Create and save new user
-        add_user(id=rand_id,
-                 login=login,
+        add_user(login=login,
                  name=name,
                  email=email,
                  password=hashed_password)
@@ -100,11 +194,6 @@ def signup():
         return redirect(url_for('login'))
 
     return render_template('signup.html')
-
-
-@app.route('/my_corpora')
-def my_corpora():
-    return render_template('corpora.html')
 
 
 @app.route('/logout')
@@ -138,12 +227,12 @@ def login():
 
             return redirect(url_for('home'))
 
-        error = 'wrong password'
+        message = 'wrong password'
     else:
-        error = 'invalid login'
+        message = 'invalid login'
 
     # Failed login
-    return render_template('signin.html', error=error)
+    return render_template('signin.html', message=message)
 
 
 if __name__ == '__main__':

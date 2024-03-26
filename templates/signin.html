@@ -7,7 +7,7 @@
 <div class="form-group">
     <label for="login">Логин</label>
     <input type="login" class="form-control" name="login" id="login" aria-describedby="loginHelp" placeholder="Введите логин или электронную почту">
-    {% if error == 'invalid login' %}
+    {% if message == 'invalid login' %}
     <div class="alert alert-danger" role="alert">
         Пользователя с таким логином не существует
     </div>
@@ -17,7 +17,7 @@
 <div class="form-group">
     <label for="password">Пароль</label>
     <input type="password" class="form-control" name="password" id="password" placeholder="Введите пароль">
-    {% if error == 'wrong password' %}
+    {% if message == 'wrong password' %}
     <div class="alert alert-danger" role="alert">
         Неверный пароль
     </div>
