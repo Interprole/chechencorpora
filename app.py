@@ -1,4 +1,3 @@
-from sklearn.neighbors import KNeighborsClassifier
 import plotly.graph_objects as go
 from flask import (
     Flask,
@@ -16,18 +15,7 @@ from flask_login import (
     )
 from flask_bcrypt import Bcrypt
 import os
-from database import (
-    get_corpora,
-    init_database,
-    create_database,
-    add_user,
-    add_corpus,
-    load_user,
-    init_login_manager,
-    find_user,
-    get_idioms,
-    add_idiom
-    )
+from database import *
 from dotenv import load_dotenv
 
 # env from .env file
@@ -65,14 +53,90 @@ def home():
     return render_template('index.html')
 
 
+@app.route('/corpora/<id>', methods=['POST', 'GET'])
+def corpus(id):
+    corpus = Corpus.query.get_or_404(id)
+
+    if request.method == 'POST':
+        if request.form.get('add_morph') == "morph":
+            word_id = request.form.get('word_id')
+            sentence_id = request.form.get('sentence_id')
+            morph_ids = list(map(int, request.form.getlist('morphs')))
+            morphs = get_morphs(ids=morph_ids)
+
+            add_word(number=word_id,
+                     morphs=morphs,
+                     sentence_id=sentence_id)
+        else:
+            translation = request.form.get('translation')
+            text = request.form.get('text')
+            add_sentence(text=text,
+                        translation=translation,
+                        corpus_id=corpus.id)
+
+        return redirect(url_for('corpus', id=corpus.id))
+
+    morphs = get_morphs()
+    words = get_words()
+    return render_template('corpus.html', corpus=corpus,
+                           morphs=morphs, words=words)
+
+
+@app.route('/glosses', methods=['POST', 'GET'])
+def glosses():
+    if request.method == 'POST':
+        gloss = request.form.get('gloss')
+        definition = request.form.get('definition')
+        note = request.form.get('note')
+
+        if get_glosses(gloss=gloss):
+            message = 'existing gloss'
+        else:
+            add_gloss(gloss=gloss,
+                      definition=definition,
+                      note=note)
+            message = 'success'
+
+    glosses = get_glosses()
+    message = ''
+    return render_template('glosses.html', glosses=glosses,
+                           message=message)
+
+
+@app.route('/morphs', methods=['POST', 'GET'])
+def morphs():
+    if request.method == 'POST':
+        text = request.form.get('morph')
+        glosses_ids = list(map(int, request.form.getlist('glosses')))
+        idiom_id = request.form.get('idiom')
+
+        glosses = get_glosses(ids=glosses_ids)
+
+        if get_morphs(text=text, idiom_id=idiom_id,
+                      glosses=glosses):
+            message = 'existing morph'
+        else:
+            add_morph(text=text,
+                      glosses=glosses,
+                      idiom_id=idiom_id)
+            message = 'success'
+
+    glosses = get_glosses()
+    idioms = get_idioms()
+    morphs = get_morphs()
+    message = ''
+    return render_template('morphs.html', glosses=glosses,
+                           message=message, idioms=idioms,
+                           morphs=morphs)
+
+
 @app.route('/corpora', methods=['POST', 'GET'])
 def corpora():
     if request.method == 'POST':
         name = request.form.get('name')
         description = request.form.get('description')
         source = request.form.get('source')
-        idiom_id = get_idioms(
-            request.form.get('idiom')).id
+        idiom_id = request.form.get('idiom')
 
         if get_corpora(name=name):
             message = 'existing corpus'
@@ -89,6 +153,20 @@ def corpora():
 
     return render_template('corpora.html', corpora=corpora,
                            message=message, idioms=idioms)
+
+
+@app.route('/search', methods=['POST', 'GET'])
+def search():
+    search = 'n'
+    result = None
+    if request.method == 'POST':
+        text = request.form.get('query')
+        result = search_morph(text)
+        search = 'y'
+
+    return render_template('search.html', result=result,
+                           search=search,
+                           query=text)
 
 
 @app.route('/idioms', methods=['POST', 'GET'])

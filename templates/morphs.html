@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block content %}
+
+{% if current_user.admin %}
+<p>
+  <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#morphcreate" aria-expanded="false" aria-controls="morphcreate">
+    Добавить морфему
+  </button>
+</p>
+<div class="collapse" id="morphcreate">
+  <div class="card card-body">
+    <form class="container" action="/morphs" method="POST">
+        <div class="form-group">
+            <label for="morph">Морфема</label>
+            <input type="text" class="form-control" name="morph" id="morph" aria-describedby="morphHelp" placeholder="Введите морфему" required="true">
+        </div>
+        <div class="form-group">
+            <label for="glosses">Выберите глоссы</label>
+            <select class="form-control" name="glosses" id="glosses" multiple>
+                {% for gloss in glosses %}
+                <option value="{{ gloss.id }}">{{ gloss.gloss }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="idiom">Морфема какого идиома?</label>
+            <select class="form-control" name="idiom" id="idiom" aria-describedby="idiomHelp" required>
+                <option value="" selected disabled>Выберите идиому</option>
+                {% for idiom in idioms %}
+                <option value="{{ idiom.id }}">{{ idiom.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Добавить</button>
+    </form>
+    </div>
+</div>
+{% endif %}
+
+{% for morph in morphs %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">{{ morph.text }}</h5>
+            <p class="card-text"><strong>Привязанные глоссы:</strong>
+            {% for gloss in morph.glosses %}
+                {{ gloss.gloss }},
+            {% endfor %}
+            </p>
+        </div>
+    </div>
+{% endfor %}
+
+{% endblock %}

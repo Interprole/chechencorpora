@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Поиск морфемы</h2>
+    <form action="/search" method="POST">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Введите текст для поиска" name="query">
+            <button class="btn btn-primary" type="submit">Поиск</button>
+        </div>
+    </form>
+    {% if search == 'y' %}
+    <div class="search-results">
+        {% if result %}
+        {% for i in result %}
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Найденная морфема: {{query}}</h5>
+                <p class="card-text">Слово: {{i.sentence.word(i.number)}}</p>
+                <p class="card-text">Текст: {{ i.sentence.text }}</p>
+                <p class="card-text">Перевод: {{ i.sentence.translation }}</p>
+                <p class="card-text">Корпус: {{ i.sentence.corpus.name }}</p>
+                <!-- Здесь можно добавить другие свойства морфемы -->
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p>Морфема не найдена.</p>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

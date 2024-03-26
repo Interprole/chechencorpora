@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Предложения</h2>
+    <div id="accordion">
+        {% for sentence in corpus.sentences %}
+        <div class="card">
+            <div class="card-header" id="heading{{ sentence.id }}">
+                <h5 class="mb-0">
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapse{{ sentence.id }}" aria-expanded="true" aria-controls="collapse{{ sentence.id }}">
+                        {{ sentence.text }}
+                    </button>
+                </h5>
+            </div>
+
+<div id="collapse{{ sentence.id }}" class="collapse" aria-labelledby="heading{{ sentence.id }}" data-parent="#accordion">
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Слово</th>
+                    <th scope="col">Морфемы</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i, word in sentence.tokenize() %}
+                <tr>
+                    <td>{{ word }}</td>
+                    <td>
+                        <!-- Форма для добавления морфем -->
+                        <form action="/corpora/{{corpus.id}}" method="post" class="add-morphs-form">
+                            <input type="hidden" name="add_morph" value="morph">
+                            <input type="hidden" name="sentence_id" value="{{ sentence.id }}">
+                            <input type="hidden" name="word_id" value="{{ i }}">
+                             <input type="hidden" name="word" value="{{ word }}">
+                            <div class="mb-3">
+                                <label for="morphInput{{ loop.index }}" class="form-label">Последовательность морфем для "{{ word }}":</label>
+                                <select class="form-control" name="morphs" id="morphs" multiple>
+                                    {% for morph in morphs %}
+                                    <option value="{{ morph.id }}">{{ morph.text }} --- {% for gloss in morph.glosses %}
+                                        {{ gloss.gloss }},
+                                    {% endfor %}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Добавить морфемы</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Форма для добавления предложения -->
+    <button class="btn btn-primary mt-3" type="button" data-toggle="collapse" data-target="#addSentenceCollapse" aria-expanded="false" aria-controls="addSentenceCollapse">
+        Добавить предложение
+    </button>
+    <div class="collapse" id="addSentenceCollapse">
+        <div class="card card-body mt-3">
+            <form action="/corpora/{{corpus.id}}" method="post" class="container">
+                <div class="mb-3">
+                    <label for="text" class="form-label">Текст предложения</label>
+                    <input type="text" class="form-control" id="text" name="text" required>
+                </div>
+                <div class="mb-3">
+                    <label for="translation" class="form-label">Перевод предложения</label>
+                    <input type="text" class="form-control" id="translation" name="translation" aria-describedby="translationHelp">
+                    <small id="translationHelp" class="form-text text-muted">Поле необязательно для заполнения.</small>
+                </div>
+                <button type="submit" class="btn btn-primary">Добавить предложение</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
