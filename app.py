@@ -223,7 +223,7 @@ def idioms():
         # Добавляем информацию о корпусах в пользовательские данные
         customdata=tree_nodes['customdata'],
         hovertemplate="<b>%{label}</b><br><br>" +
-        "Corpora: %{customdata}<br>" +
+        # "Corpora: %{customdata}<br>" +
         "<extra></extra>",
     )
 
