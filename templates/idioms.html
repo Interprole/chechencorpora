@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block content %}
+{% if current_user.admin %}
+<p>
+  <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#idiomcreate" aria-expanded="false" aria-controls="idiomcreate">
+    Добавить идиом/группу
+  </button>
+</p>
+<div class="collapse" id="idiomcreate">
+  <div class="card card-body">
+    <form class="container" action="/idioms" method="POST">
+        <div class="form-group">
+            <label for="name">Название идиома/группы</label>
+            <input type="text" class="form-control" name="name" id="name" aria-describedby="nameHelp" placeholder="Введите название" required="true"></input>
+            {% if message == 'existing idiom' %}
+            <div class="alert alert-danger" role="alert">
+                Такой идиом уже добавлен
+            </div>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            <label for="group">К какой группе относится?</label>
+            <select class="form-control" name="group" id="group" aria-describedby="groupHelp">
+                <option value selected>Выберите идиому</option>
+                {% for idiom in idioms %}
+                <option value="{{ idiom.id }}">{{ idiom.name }}</option>
+                {% endfor %}
+            </select>
+            <small id="groupHelp" class="form-text text-muted">Поле необязательно для заполнения.</small>
+        </div>
+        <button type="submit" class="btn btn-primary">Добавить</button>
+    </form>
+    </div>
+</div>
+{% endif %}
+
+
+{{ tree_html|safe }}
+
+
+<!--
+<div id="accordion">
+  {% for idiom in idioms %}
+  <div class="card">
+    <div class="card-header" id="heading{{ idiom.id }}">
+      <h2 class="mb-0">
+        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse{{ idiom.id }}" aria-expanded="true" aria-controls="collapse{{ idiom.id }}">
+          {{ idiom.name }}
+        </button>
+      </h2>
+    </div>
+
+    <div id="collapse{{ idiom.id }}" class="collapse" aria-labelledby="heading{{ idiom.id }}" data-parent="#accordion">
+      <div class="card-body">
+        <p>Группа: {{ idiom.group.name }}</p>
+        <p>Корпуса:</p>
+        <ul>
+          {% for corpus in idiom.corpora %}
+          <li>{{ corpus.name }}</li>
+          corpus.description
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+-->
+{% endblock %}
