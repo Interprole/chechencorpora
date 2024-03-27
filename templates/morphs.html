@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 
-{% if current_user.admin %}
+{% if current_user.is_authenticated %}
 <p>
   <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#morphcreate" aria-expanded="false" aria-controls="morphcreate">
     Добавить морфему
