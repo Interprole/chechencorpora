@@ -37,13 +37,13 @@
                                 <label for="morphInput{{ loop.index }}" class="form-label">Последовательность морфем для "{{ word }}":</label>
                                 <select class="form-control" name="morphs" id="morphs" multiple>
                                     {% for morph in morphs %}
-                                    <option value="{{ morph.id }}">{{ morph.text }} --- {% for gloss in morph.glosses %}
+                                    <option value="{{ morph.id }}" {% for word_ in sentence.words %}{% for morph_ in word_.morphs %}{% if word_.number == i and morph.id == morph_.id %} selected {% endif %} {% endfor %} {% endfor %}>{{ morph.text }} --- {% for gloss in morph.glosses %}
                                         {{ gloss.gloss }},
                                     {% endfor %}</option>
                                     {% endfor %}
                                 </select>
                             </div>
-                            <button type="submit" class="btn btn-primary">Добавить морфемы</button>
+                            <button type="submit" class="btn btn-primary">Сохранить морфемы</button>
                         </form>
                     </td>
                 </tr>
